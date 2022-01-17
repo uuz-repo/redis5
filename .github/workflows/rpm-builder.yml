@@ -27,7 +27,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: chown
-        run: whoami && sudo whoami && sudo -u runneradmin whoami && cat /etc/passwd 
+        run: sudo chown 1000:1000 ./*
         
       # Runs a single command using the runners shell
       - name: Run Docker RpmBuild
