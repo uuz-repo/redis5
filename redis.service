@@ -1,0 +1,21 @@
+[Unit]
+Description=redis
+
+[Service]
+Type=forking
+ExecStart=<_install_dir>/bin/redis-server <_conffile>
+WorkingDirectory=<_install_dir>
+User=<_user>
+Group=<_group>
+# 重启策略
+Restart=on-failure
+RestartSec=2
+StartLimitInterval=0s
+StartLimitBurst=5
+# limits
+LimitNPROC=131072
+LimitNOFILE=131072  
+
+
+[Install]
+WantedBy=multi-user.target
