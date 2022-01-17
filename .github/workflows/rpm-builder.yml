@@ -31,7 +31,7 @@ jobs:
         
       # Runs a single command using the runners shell
       - name: Run Docker RpmBuild
-        run: docker run -v $PWD:/home/builder/rpm/ -w /home/builder/rpm uuzrepo/rpmdevtools-centos7
+        run: docker run -v $PWD:/home/builder/rpm/ -w /home/builder/rpm uuzrepo/rpmbuild-centos:7
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
