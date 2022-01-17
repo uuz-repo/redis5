@@ -27,7 +27,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: chown
-        run: sudo chown 1000:1000 ./* && ls -la
+        run: sudo chown 1000:1000 $(dirname $PWD)
         
       # Runs a single command using the runners shell
       - name: Run Docker RpmBuild
