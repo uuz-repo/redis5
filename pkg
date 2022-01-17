@@ -1,9 +1,0 @@
-#!/usr/bin/bash
-ls -la && ls ../ -la
-PKGS=$(cat ./*.spec | grep "\s*#\s*X-BuildRequires\s*:" | awk -F ":" '{print $2}' | xargs) && [[ -n $PKGS ]] && sudo yum install -y $PKGS
-for url in $(rpmspec --parse ./*.spec  | grep -E "^Source" | awk '{print $2}' | grep http)
-do
-curl -sO "$url"
-done
-
-rpmbuild -ba ./*.spec
