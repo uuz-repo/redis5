@@ -7,6 +7,4 @@ do
 curl -sO "$url"
 done
 
-ls -al
-ls ../ -al
 rpmbuild -ba ./*.spec
