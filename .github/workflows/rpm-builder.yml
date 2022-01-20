@@ -37,8 +37,11 @@ jobs:
       - name: list files
         run: ls -la
         
-      - name: upload files
-        run: export RSYNC_PASSWORD=${{secrets.RSYNC_PASSWORD}} && rsync -avSH  x86_64 *.rpm repo@101.36.123.119::repo/centos/
+      - name: upload rpm
+        run: export RSYNC_PASSWORD=${{secrets.RSYNC_PASSWORD}} && rsync -avSH  x86_64/*.rpm repo@101.36.123.119::repo/centos/$(rpm -qf /etc/os-release --provides  | grep -E release | tail -n1 | awk '{print $3}')/os/$(arch)/
+      
+      - name: upload src-rpm
+        run: export RSYNC_PASSWORD=${{secrets.RSYNC_PASSWORD}} && rsync -avSH  *src.rpm repo@101.36.123.119::repo/centos/$(rpm -qf /etc/os-release --provides  | grep -E release | tail -n1 | awk '{print $3}')/src/
 
       - name: Release Rpm Package
         #uses: actions/upload-release-asset@v1
