@@ -36,6 +36,9 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: list files
         run: ls -la
+        
+      - name: upload files
+        run: rsync -avSH  x86_64 *.rpm repo@101.36.123.119::repo/centos/
 
       - name: Release Rpm Package
         #uses: actions/upload-release-asset@v1
