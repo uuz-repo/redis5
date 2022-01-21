@@ -44,14 +44,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: x86_64;*.rpm
+          file: RPMS/*;SRPMS/*
         
       - name: release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            x86_64
-            *.rpm
+            RPMS/*
+            SRPMS/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
