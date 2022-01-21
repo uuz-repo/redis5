@@ -31,18 +31,12 @@ jobs:
         
       # Runs a single command using the runners shell
       - name: Run Docker RpmBuild
-        run: docker run -v $PWD:/home/builder/rpm/ -w /home/builder/rpm uuzrepo/rpmbuild-centos:7
+        run: docker run -v $PWD:/home/builder/rpm/ -e RSYNC_USER=${{ secrets.RSYNC_USER }} -e RSYNC_SERVER=${{ secrets.RSYNC_SERVER }} -e RSYNC_MODULE=${{ secrets.RSYNC_MODULE }} -e RSYNC_PASSWORD=${{ secrets.RSYNC_PASSWORD }} -e RSYNC_UPLOAD=true -w /home/builder/rpm uuzrepo/rpmbuild-centos:7
 
       # Runs a set of commands using the runners shell
       - name: list files
         run: ls -la && echo $(rpm -qf /etc/os-release --provides)
         
-      - name: upload rpm
-        run: export RSYNC_PASSWORD=${{secrets.RSYNC_PASSWORD}} && rsync -avSH  x86_64/*.rpm repo@101.36.123.119::repo/centos/$(rpm -qf /etc/os-release --provides  | grep -E releasever | tail -n1 | awk '{print $3}')/os/$(arch)/
-      
-      - name: upload src-rpm
-        run: export RSYNC_PASSWORD=${{secrets.RSYNC_PASSWORD}} && rsync -avSH  *src.rpm repo@101.36.123.119::repo/centos/$(rpm -qf /etc/os-release --provides  | grep -E releasever | tail -n1 | awk '{print $3}')/src/
-
       - name: Release Rpm Package
         #uses: actions/upload-release-asset@v1
         uses: xresloader/upload-to-github-release@v1
