@@ -1,0 +1,59 @@
+# This is a basic workflow to help you get started with Actions
+
+name: rpm-builder-centos:8
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: chown
+        run: sudo chown 1000:1000 -R $(dirname $PWD)
+        
+      # Runs a single command using the runners shell
+      - name: Run Docker RpmBuild
+        run: docker run -v $PWD:/home/builder/rpm/ -e RSYNC_USER=${{ secrets.RSYNC_USER }} -e RSYNC_SERVER=${{ secrets.RSYNC_SERVER }} -e RSYNC_MODULE=${{ secrets.RSYNC_MODULE }} -e RSYNC_PASSWORD=${{ secrets.RSYNC_PASSWORD }} -e RSYNC_UPLOAD=true -w /home/builder/rpm uuzrepo/rpmbuild-centos:8
+
+      # Runs a set of commands using the runners shell
+      - name: list files
+        run: ls -la && echo $(rpm -qf /etc/os-release --provides)
+        
+      - name: Release Rpm Package
+        #uses: actions/upload-release-asset@v1
+        uses: xresloader/upload-to-github-release@v1
+        #if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: RPMS/*;SRPMS/*
+        
+      - name: release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            RPMS/*
+            SRPMS/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+ 
